@@ -4,13 +4,13 @@
 2. ลง jupyter notebook by thise code $conda install jupyter
 - $conda install numpy == 1.18.0
 - $conda install pandas
-- $Install scikit-image
-    $pip install -U scikit-image
-    $pip install --upgrade scikit-image(version 0.15.0)
+- Install scikit-image-0.15.0
+     $pip install -U scikit-image
+     $pip install --upgrade scikit-image(version 0.15.0)
 - Install tensorflow 
-    $pip install --upgrade tensorflow
+     $pip install --upgrade tensorflow
 - Install keras_efficientnets
-    $pip install keras_efficientnets
+     $pip install keras_efficientnets
     
     
     
