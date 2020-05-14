@@ -28,16 +28,20 @@
      Dog image  11702.jpg ใช้ไม่ได้ (rm 11702.jpg)
     
     
-    
 ****test tansorflow GPU
     
     
+# Kernel Dead Problem 
+
+## Solving by Uninstall jpykernel and install jupyter agian
+   
+   $conda remove jpykernel
+   
+   $conda clean -tipsy
+   
+   $conda install jupyter
+
     
     
     
-    
-    
-pip uninstall -y numpy
-pip uninstall -y setuptools
-pip install setuptools
-pip install numpy
+   
