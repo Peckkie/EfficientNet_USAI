@@ -73,7 +73,7 @@
     
 # Kernel Dead Problem 
 
-## Solving by Uninstall jpykernel and install jupyter agian
+## Solving by Uninstall ipykernel and install jupyter agian
    
    $conda remove jpykernel
    
