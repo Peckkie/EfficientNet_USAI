@@ -30,7 +30,7 @@
 ## 4. กรณีมี GPU support (Link : https://www.tensorflow.org/install/gpu)
      $pip install tensorflow-gpu==2.2.0
      
-     ###Install CUDA with apt
+###Install CUDA with apt
      
      # Add NVIDIA package repositories
      
