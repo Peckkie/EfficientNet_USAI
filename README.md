@@ -1,31 +1,34 @@
 # ขั้นตอนการสร้าง Ubuntu
+
 ## 1. ลง miniconda (Link : https://www.tomordonez.com/install-miniconda-linux.html)
-- Create the enviroment (link : https://janakiev.com/blog/jupyter-virtual-envs/) -Python 3.6.9
+
+     Create the enviroment by (link : https://janakiev.com/blog/jupyter-virtual-envs/) - Python 3.6.9
+
 ## 2. ลง jupyter notebook on enviroment by thise code $conda install jupyter
 
-- $conda install numpy == 1.18.4
+     $conda install numpy == 1.18.4
 
-- $conda install pandas
+     $conda install pandas
 
-- Install scikit-image(0.16.2)
+Install scikit-image(0.16.2)
      
      $pip install -U scikit-image
      
      $pip install --upgrade scikit-image(version 0.16.2)
 
-- Install tensorflow 
+Install tensorflow 
      
      $pip install --upgrade tensorflow(version 2.2.0)
      
-- Install keras_efficientnets
+Install keras_efficientnets
      
      $pip install keras_efficientnets(version 2.3.1)
      
 ## 3. ลบ รูปที่ใช้ไม่ได้ของจาก dataset cat&dog on pwd Linux
      
-     $ls-laS 
+     $ls-laS #เรียงรูปตาม size
      
-     Dog image  11702.jpg ใช้ไม่ได้ (rm 11702.jpg)
+     #Dog image  11702.jpg ใช้ไม่ได้ ($rm 11702.jpg)
     
 ## 4. กรณีมี GPU support (Link : https://www.tensorflow.org/install/gpu)
      $pip install tensorflow-gpu==2.2.0
@@ -66,9 +69,6 @@
      $sudo apt-get install -y --no-install-recommends libnvinfer6=6.0.1-1+cuda10.1 \
       libnvinfer-dev=6.0.1-1+cuda10.1 \
       libnvinfer-plugin6=6.0.1-1+cuda10.1
-
-
-****test tansorflow GPU
     
 ---
     
@@ -76,11 +76,11 @@
 
 ## Solving by Uninstall ipykernel and install jupyter agian
    
-   $conda remove jpykernel
+     $conda remove jpykernel
    
-   $conda clean -tipsy
+     $conda clean -tipsy
    
-   $conda install jupyter
+     $conda install jupyter
 
     
     
