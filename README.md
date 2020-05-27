@@ -6,7 +6,7 @@
 
 ## 2. ลง jupyter notebook on enviroment by thise code $conda install jupyter
 
-     $conda install numpy == 1.18.4
+     $pip install numpy==1.18.4
 
      $conda install pandas
 
