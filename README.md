@@ -65,15 +65,15 @@ Install keras_efficientnets
 
      # Install development and runtime libraries (~4GB)
      
-     # $sudo apt-get install --no-install-recommends \
-     # cuda-10-1 \
-     # libcudnn7=7.6.4.38-1+cuda10.1  \
-     # libcudnn7-dev=7.6.4.38-1+cuda10.1 -->
-     sudo apt-get install --no-install-recommends libcudnn7=7.6.4.38-1+cuda10.1
-     sudo apt-get install --no-install-recommends libcudnn7-dev=7.6.4.38-1+cuda10.1
+     # ~~$sudo apt-get install --no-install-recommends \~~
+     # ~~cuda-10-1 \~~
+     # ~~libcudnn7=7.6.4.38-1+cuda10.1  \~~
+     # ~~libcudnn7-dev=7.6.4.38-1+cuda10.1~~
+     $sudo apt-get install --no-install-recommends libcudnn7=7.6.4.38-1+cuda10.1
+     $sudo apt-get install --no-install-recommends libcudnn7-dev=7.6.4.38-1+cuda10.1
      
-     sudo apt-get install libcublas-dev=10.2.1.243-1
-     sudo apt-get install libcublas10=10.2.1.243-1
+     $sudo apt-get install libcublas-dev=10.2.1.243-1
+     $sudo apt-get install libcublas10=10.2.1.243-1
      
       
 
@@ -83,7 +83,7 @@ Install keras_efficientnets
       libnvinfer-dev=6.0.1-1+cuda10.1 \
       libnvinfer-plugin6=6.0.1-1+cuda10.1
       
-      conda install cudatoolkit=10.1.243
+      $conda install cudatoolkit=10.1.243
 ---
     
 # Kernel Dead Problem 
