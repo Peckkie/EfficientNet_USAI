@@ -65,10 +65,10 @@ Install keras_efficientnets
 
      # Install development and runtime libraries (~4GB)
      
-     # ~~$sudo apt-get install --no-install-recommends \~~
-     # ~~cuda-10-1 \~~
-     # ~~libcudnn7=7.6.4.38-1+cuda10.1  \~~
-     # ~~libcudnn7-dev=7.6.4.38-1+cuda10.1~~
+     # <s>$sudo apt-get install --no-install-recommends \</s>
+     # <s>cuda-10-1 \</s>
+     # <s>libcudnn7=7.6.4.38-1+cuda10.1  \</s>
+     # <s>libcudnn7-dev=7.6.4.38-1+cuda10.1</s>
      $sudo apt-get install --no-install-recommends libcudnn7=7.6.4.38-1+cuda10.1
      $sudo apt-get install --no-install-recommends libcudnn7-dev=7.6.4.38-1+cuda10.1
      
