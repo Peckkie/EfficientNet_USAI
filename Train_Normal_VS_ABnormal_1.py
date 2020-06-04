@@ -38,10 +38,13 @@ model.pop()
 model.summary()
 
 ##สร้าง Network ใหม่
-model2 = models.Sequential()
-model2.add(model)
-model2.add(layers.Dense(1, activation='sigmoid', name="fc_out"))        #class --> 2
-model2.summary()
+# model2 = models.Sequential()
+# model2.add(model)
+# model2.add(layers.Dense(1, activation='sigmoid', name="fc_out"))        #class --> 2
+# model2.summary()
+x = model.output
+prediction_layer = layers.Dense(1, activation='sigmoid')(x)
+model2 = models.Model(inputs=model.inputs, outputs=prediction_layer)
 
 ##จัดการ data
 import pandas as pd
