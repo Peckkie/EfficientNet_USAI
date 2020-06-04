@@ -192,7 +192,7 @@ history = model2.fit_generator(
 
 ##save model    
 os.makedirs("./models", exist_ok=True)
-model2.save('./models/ABn_vs_Nor.h5')
+model2.save('./models/ABn_vs_Nor_func.h5')
 
 ##plot graph
 acc = history.history['acc']
@@ -207,7 +207,7 @@ plt.plot(epochs_x, val_acc, 'b', label='Validation acc')
 plt.title('Training and validation accuracy')
 plt.legend()
     #save plot_acc
-plt.savefig('plot_acc_ABn_vs_Nor.png')
+plt.savefig('plot_acc_ABn_vs_Nor_func.png')
 
 plt.figure()
 plt.plot(epochs_x, loss, 'ro', label='Training loss')
@@ -215,7 +215,7 @@ plt.plot(epochs_x, val_loss, 'b', label='Validation loss')
 plt.title('Training and validation loss')
 plt.legend()
     #save plot_loss
-plt.savefig('plot_loss_ABn_vs_Nor.png')
+plt.savefig('plot_loss_ABn_vs_Nor_func.png')
 
 
 
