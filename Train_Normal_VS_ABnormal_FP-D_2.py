@@ -187,11 +187,11 @@ history = model2.fit_generator(
       verbose=1, 
       use_multiprocessing=True, 
       workers=1,
-      callbacks = tensorboard_cb)
+      callbacks = [tensorboard_cb,callbacks.EarlyStopping(monitor='val_acc', patience=200, mode='max')])
 
 ##save model    
 os.makedirs("./models", exist_ok=True)
-model2.save('./models/FP_D_small.h5')
+model2.save('./models/FP_D_small_v2.h5')
 
 ##plot graph
 acc = history.history['acc']

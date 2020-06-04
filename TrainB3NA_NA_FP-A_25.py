@@ -13,12 +13,12 @@ from tensorflow.keras import callbacks
 
 import os
     # os.path.abspath('/media/tohn/SSD/Efficient_USAI')
-os.chdir('/media/tohn/SSD/Nor_ABnor_Network/content/efficientnet_keras_transfer_learning/')
+os.chdir('/media/tohn/SSD/FP_A_Nor_Abnor_B3NA_25/content/efficientnet_keras_transfer_learning/')
       #choose gpu on processing 
-os.environ["CUDA_VISIBLE_DEVICES"]="1" # second gpu  
+os.environ["CUDA_VISIBLE_DEVICES"]="0" # second gpu  
 
 import sys
-sys.path.append('/media/tohn/SSD/Sub_Efficient_USAI/content/efficientnet_keras_transfer_learning')
+sys.path.append('/media/tohn/SSD/Nor_ABnor_Network_25/content/efficientnet_keras_transfer_learning')
 
 ##load model 
 from efficientnet.layers import Swish, DropConnect
@@ -32,7 +32,7 @@ get_custom_objects().update({
 })
 
 from tensorflow.keras.models import load_model
-model = load_model("/media/tohn/SSD/Sub_Efficient_USAI/content/efficientnet_keras_transfer_learning/models/Sub_b0_c11_250_R2.h5")
+model = load_model("/media/tohn/SSD/Nor_ABnor_Network_25/content/efficientnet_keras_transfer_learning/models/Nor_ABnor_b3_R2.h5")
 model.summary()
 model.pop()
 model.summary()
@@ -45,48 +45,48 @@ model2.summary()
 
 ##จัดการ data
 import pandas as pd
+import numpy as np
 df = pd.read_csv (r'/home/yupaporn/EfficientNet_USAI/final_training_table.csv')
-
-msk = np.random.rand(len(df)) < 0.9 #split
-test = df[~msk]
-train= df[msk]
+    #select data 
+df1 = df.loc[(df['Abs Position']  == 'P1' ) | (df['Abs Position']  == 'P2')]
+msk = np.random.rand(len(df1)) < 0.9
+test = df1[~msk] 
+train= df1[msk]
 
 ##การเเบ่งข้อมูล train/validation/test sets
-
     #The directory where we will
 base_dir = './data/views'
 os.makedirs(base_dir, exist_ok=True)
-
-    # Directories for our training,
-    # validation and test splits
+    # Directories for our training,validation and test splits
 train_dir = os.path.join(base_dir, 'train')
 os.makedirs(train_dir, exist_ok=True)
 validation_dir = os.path.join(base_dir, 'validation')
 os.makedirs(train_dir, exist_ok=True)
-
-    # Directory with our training pictures
+    # Directory with our training cat pictures
 train_Nor_dir = os.path.join(train_dir, 'Normal')
 os.makedirs(train_Nor_dir, exist_ok=True)
+    # Directory with our training cat pictures
 train_ABn_dir = os.path.join(train_dir, 'ABnormal')
 os.makedirs(train_ABn_dir, exist_ok=True)
-    # Directory with our validation pictures
+    # Directory with our training cat pictures
 validation_Nor_dir = os.path.join(validation_dir, 'Normal')
 os.makedirs(validation_Nor_dir, exist_ok=True)
+    # Directory with our training cat pictures
 validation_ABn_dir = os.path.join(validation_dir, 'ABnormal')
 os.makedirs(validation_ABn_dir, exist_ok=True)
-
+    
     #Path images of train
 Nor_train = train[train['Class']=='Normal']
 Nor_path_train = Nor_train['Path Crop'].tolist() 
 ABn_train = train[train['Class']=='Abnormal']
 ABn_path_train = ABn_train['Path Crop'].tolist() 
-    #Path images of validation
+
 Nor_validation = test[test['Class']=='Normal']
 Nor_path_validation = Nor_validation['Path Crop'].tolist() 
 ABn_validation = test[test['Class']=='Abnormal']
 ABn_path_validation= ABn_validation['Path Crop'].tolist() 
 
-    #Training
+    #Train
 fnames = Nor_path_train  
 for fname in fnames:
     dst = os.path.join(train_Nor_dir, os.path.basename(fname))
@@ -101,7 +101,7 @@ for fname in fnames:
         dst = dst+'cp.jpg'
     shutil.copyfile(fname, dst)
   
-     #Validation
+ #Validation
 fnames = Nor_path_validation 
 for fname in fnames:
     dst = os.path.join(validation_Nor_dir, os.path.basename(fname))
@@ -116,32 +116,34 @@ for fname in fnames:
         dst = dst+'cp.jpg'
     shutil.copyfile(fname, dst)
 
+print('Train images total : ',len(Nor_path_train)+len(ABn_path_train))
+print('Validation images total : ',len(ABn_path_validation)+len(Nor_path_validation))
+print('Total images : ',len(Nor_path_train)+len(ABn_path_train)+len(ABn_path_validation)+len(Nor_path_validation))
+
 ##Hyper parameters
-batch_size = 50 
+batch_size = 6 
 
 width = 150 
 height = 150 
 input_shape = (height, width, 3) #ขนาด image enter
 
-epochs = 2000
-NUM_TRAIN = len(Nor_path_train)+len(ABn_path_train)  
-NUM_TEST = len(ABn_path_validation)+len(Nor_path_validation) 
-dropout_rate = 0.2
+epochs = 2000  #จำนวนรอบในการ Train
+NUM_TRAIN = len(Nor_path_train)+len(ABn_path_train)  # จำนวนภาพ Train
+NUM_TEST = len(ABn_path_validation)+len(Nor_path_validation) #จำนวนภาพ Test
+dropout_rate = 0.2 #คือการปิดบาง Node หรือเรียกว่าทำการ Drop Out ไป ซึ่งขึ้นกับการตั้งค่าว่าจะให้ลืมไปกี่เปอร์เซนต์ดี ช่วยในการแก้ปัญหา Overfitting
 
 ##Setting data augmentation
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
 train_datagen = ImageDataGenerator(
-      rescale=1./255, # image input 0-255 --> 0-1 เปลี่ยนค่าสี
-      rotation_range=40, # หมุนภาพในองศา
-      width_shift_range=0.2, #เปลี่ยนความกว้าง
-      height_shift_range=0.2, #ปลี่ยนความสูง
-      shear_range=0.2, #ทำให้ภาพเบี้ยว
-      zoom_range=0.2, #ซุม image มากสุด 20%
-      horizontal_flip=False, #พลิกภาพแบบสุ่มตามแนวนอน
+      rescale=1./255, 
+      rotation_range=40, 
+      width_shift_range=0.2, 
+      height_shift_range=0.2, 
+      shear_range=0.2, 
+      zoom_range=0.2, 
+      horizontal_flip=False, 
       fill_mode='nearest') 
 
-    # Note that the validation data should not be augmented!
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 train_generator = train_datagen.flow_from_directory(
@@ -167,7 +169,7 @@ model2.compile(loss='binary_crossentropy',
               metrics=['acc'])
     
     #สร้าง folder TensorBoard
-root_logdir = '/media/tohn/SSD/Nor_ABnor_Network/my_logs'
+root_logdir = '/media/tohn/SSD/FP_A_Nor_Abnor_B3NA_25/my_logs'
 def get_run_logdir():
     import time
     run_id = time.strftime("run_%Y_%m_%d_%H_%M_%S")
@@ -175,6 +177,9 @@ def get_run_logdir():
 run_logdir = get_run_logdir()
 
 tensorboard_cb = callbacks.TensorBoard(run_logdir)
+
+#ส้รางไฟล์เก็บโมเดล
+os.makedirs("./models", exist_ok=True)
 
 history = model2.fit_generator(
       train_generator,
@@ -185,11 +190,13 @@ history = model2.fit_generator(
       verbose=1, 
       use_multiprocessing=True, 
       workers=1,
-      callbacks = [tensorboard_cb,callbacks.EarlyStopping(monitor='val_acc', patience=50, mode='max'), callbacks.ModelCheckpoint(filepath='./models/ABn_vs_Nor_call.h5' , save_freq = 'epoch')])
+      callbacks = [tensorboard_cb,callbacks.ModelCheckpoint(filepath='./models/FP_A_small_call.h5', save_freq = 'epoch')])
+
+hist_df = pd.DataFrame(history.history) 
+hist_df.to_csv('hist_b3_A.csv')
 
 ##save model    
-os.makedirs("./models", exist_ok=True)
-model2.save('./models/ABn_vs_Nor.h5')
+model2.save('./models/FP_A_small.h5')
 
 ##plot graph
 acc = history.history['acc']
@@ -204,7 +211,7 @@ plt.plot(epochs_x, val_acc, 'b', label='Validation acc')
 plt.title('Training and validation accuracy')
 plt.legend()
     #save plot_acc
-plt.savefig('plot_acc_ABn_vs_Nor.png')
+plt.savefig('plot_acc_FP_A_.png')
 
 plt.figure()
 plt.plot(epochs_x, loss, 'ro', label='Training loss')
@@ -212,20 +219,6 @@ plt.plot(epochs_x, val_loss, 'b', label='Validation loss')
 plt.title('Training and validation loss')
 plt.legend()
     #save plot_loss
-plt.savefig('plot_loss_ABn_vs_Nor.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+plt.savefig('plot_loss_FP_A_.png')
 
 

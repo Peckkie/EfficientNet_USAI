@@ -15,7 +15,7 @@ import os
     # os.path.abspath('/media/tohn/SSD/Efficient_USAI')
 os.chdir('/media/tohn/SSD/FP-B_Nor_ABnor_Network/content/efficientnet_keras_transfer_learning/')
       #choose gpu on processing 
-os.environ["CUDA_VISIBLE_DEVICES"]="0" # second gpu  
+os.environ["CUDA_VISIBLE_DEVICES"]="1" # second gpu  
 
 import sys
 sys.path.append('/media/tohn/SSD/Sub_Efficient_USAI/content/efficientnet_keras_transfer_learning')
