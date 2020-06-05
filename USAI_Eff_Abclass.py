@@ -5,7 +5,7 @@ df = pd.read_csv (r'/home/yupaporn/codes/USAI/detail1_250.csv')
 
 import os
 # os.path.abspath('/media/tohn/SSD/Efficient_USAI')
-os.chdir('/media/tohn/SSD/Efficient_USAI/content/efficientnet_keras_transfer_learning/')
+os.chdir('/media/tohn/SSD/test_func/content/efficientnet_keras_transfer_learning/')
 
 # The directory where we will
 base_dir = './data/views'
@@ -196,7 +196,7 @@ for fname in fnames:
     dst = os.path.join(train_P8_dir, os.path.basename(fname))
     shutil.copyfile(fname, dst)
 
-os.environ["CUDA_VISIBLE_DEVICES"]="1" # second gpu  
+os.environ["CUDA_VISIBLE_DEVICES"]="" # second gpu  
 
     
 from tensorflow.keras import models
@@ -217,7 +217,7 @@ width = 150
 height = 150 
 input_shape = (height, width, 3) #ขนาด image enter
 
-epochs = 500  #จำนวนรอบในการ Train
+epochs = 10  #จำนวนรอบในการ Train
 NUM_TRAIN = 2821# จำนวนภาพ Train
 NUM_TEST = 125 #จำนวนภาพ Test
 dropout_rate = 0.2 
@@ -229,8 +229,7 @@ sys.path.append('/media/tohn/SSD/Efficient_USAI/content/efficientnet_keras_trans
 from efficientnet import EfficientNetB0 as Net
 from efficientnet import center_crop_and_resize, preprocess_input
 
-# loading pretrained conv base model
-conv_base = Net(weights='imagenet', include_top=False, input_shape=input_shape) 
+
 
 # data augmentation เพื่อลดโอกาสการเกิด overfitting
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -265,15 +264,31 @@ validation_generator = test_datagen.flow_from_directory(
         color_mode= 'rgb',
         class_mode='categorical')
 
-model = models.Sequential()
-model.add(conv_base)
-model.add(layers.GlobalMaxPooling2D(name="gap"))
-# model.add(layers.Flatten(name="flatten"))
-if dropout_rate > 0:
-    model.add(layers.Dropout(dropout_rate, name="dropout_out"))
-# model.add(layers.Dense(256, activation='relu', name="fc1"))
-model.add(layers.Dense(8, activation='softmax', name="fc_out"))        #class --> 8
+# loading pretrained conv base model
+conv_base = Net(weights='imagenet', include_top=False, input_shape=input_shape) 
+
+x = conv_base.output  #(in your case pre_trained model is efficientnet-b3)
+global_average_layer = GlobalAveragePooling2D()(x)
+dropout_layer_1 = Dropout(0.50)(global_average_layer)
+prediction_layer = Dense(1, activation='sigmoid')(dropout_layer_1)
+
+model = Model(inputs= pre_trained_model.input, outputs=prediction_layer) 
 model.summary()
+
+# model_eff = models.Model(inputs=conv_base.inputs, outputs=[conv_base.layers[-3].output,conv_base.output])
+
+# model = 
+
+
+# model = models.Sequential()
+# model.add(conv_base)
+# model.add(layers.GlobalMaxPooling2D(name="gap"))
+# # model.add(layers.Flatten(name="flatten"))
+# if dropout_rate > 0:
+#     model.add(layers.Dropout(dropout_rate, name="dropout_out"))
+# # model.add(layers.Dense(256, activation='relu', name="fc1"))
+# model.add(layers.Dense(8, activation='softmax', name="fc_out"))        #class --> 8
+# model.summary()
 
 #showing before&after freezing
 print('This is the number of trainable layers '
@@ -301,7 +316,7 @@ history = model.fit_generator(
  
 #save model    
 os.makedirs("./models", exist_ok=True)
-model.save('./models/Abs_b0_c11_250.h5')
+model.save('./models/Abs_b0_c11_250_func.h5')
 
 #plot graph
 acc = history.history['acc']
@@ -315,7 +330,7 @@ plt.plot(epochs_x, val_acc, 'b', label='Validation acc')
 plt.title('Training and validation accuracy')
 plt.legend()
 #save plot_acc
-plt.savefig('plot_acc_abs.png')
+plt.savefig('plot_acc_abs_func.png')
 
 plt.figure()
 plt.plot(epochs_x, loss, 'bo', label='Training loss')
@@ -323,7 +338,7 @@ plt.plot(epochs_x, val_loss, 'b', label='Validation loss')
 plt.title('Training and validation loss')
 plt.legend()
 #save plot_loss
-plt.savefig('plot_loss_sub.png')
+plt.savefig('plot_loss_sub_func.png')
 
       
       
