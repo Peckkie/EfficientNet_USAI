@@ -126,7 +126,7 @@ width = 150
 height = 150 
 input_shape = (height, width, 3) #ขนาด image enter
 
-epochs = 2000
+epochs = 20
 NUM_TRAIN = len(Nor_path_train)+len(ABn_path_train)  
 NUM_TEST = len(ABn_path_validation)+len(Nor_path_validation) 
 dropout_rate = 0.2
