@@ -177,7 +177,7 @@ model.compile(loss='binary_crossentropy',
               metrics=['acc'])
     
     #สร้าง folder TensorBoard
-root_logdir = '/media/tohn/SSD/Nor_ABnor_Network_24/my_logs'
+root_logdir = '/media/tohn/SSD/test_func/my_logs'
 def get_run_logdir():
     import time
     run_id = time.strftime("run_%Y_%m_%d_%H_%M_%S")
