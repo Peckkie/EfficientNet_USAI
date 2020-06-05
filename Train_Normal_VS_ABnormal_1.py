@@ -44,7 +44,7 @@ model.summary()
 # model2.summary()
 x = model.output
 prediction_layer = layers.Dense(1, activation='sigmoid')(x)
-model2 = models.Model(inputs=model.inputs, outputs=prediction_layer)
+model2 = models.Model(inputs=model.input, outputs=prediction_layer)
 
 ##จัดการ data
 import pandas as pd
@@ -126,7 +126,7 @@ width = 150
 height = 150 
 input_shape = (height, width, 3) #ขนาด image enter
 
-epochs = 20
+epochs = 10
 NUM_TRAIN = len(Nor_path_train)+len(ABn_path_train)  
 NUM_TEST = len(ABn_path_validation)+len(Nor_path_validation) 
 dropout_rate = 0.2
