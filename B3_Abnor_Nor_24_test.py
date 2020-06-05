@@ -147,10 +147,10 @@ validation_generator = test_datagen.flow_from_directory(
 # loading pretrained conv base model
 conv_base = Net(weights='imagenet', include_top=False, input_shape=input_shape) 
 
-x = conv_base.output  #(in your case pre_trained model is efficientnet-b3)
-global_average_layer = GlobalAveragePooling2D()(x)
-dropout_layer_1 = Dropout(0.50)(global_average_layer)
-prediction_layer = Dense(1, activation='sigmoid')(dropout_layer_1)
+x = conv_base.output  
+global_average_layer = layers.GlobalAveragePooling2D()(x)
+dropout_layer_1 = layers.Dropout(0.50)(global_average_layer)
+prediction_layer = layers.Dense(1, activation='sigmoid')(dropout_layer_1)
 
 model = Model(inputs= pre_trained_model.input, outputs=prediction_layer) 
 model.summary()
