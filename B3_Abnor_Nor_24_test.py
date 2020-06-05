@@ -11,7 +11,7 @@ train= df[msk]
 
 import os
 # os.path.abspath('/media/tohn/SSD/Efficient_USAI')
-os.chdir('/media/tohn/SSD/Nor_ABnor_Network_24/content/efficientnet_keras_transfer_learning/')
+os.chdir('/media/tohn/SSD/test_func/content/efficientnet_keras_transfer_learning/')
   #choose gpu on processing 
 os.environ["CUDA_VISIBLE_DEVICES"]="" # second gpu  
 
@@ -107,7 +107,7 @@ NUM_TEST = len(ABn_path_validation)+len(Nor_path_validation)
 dropout_rate = 0.2
 
 import sys
-sys.path.append('/media/tohn/SSD/test_func/content/efficientnet_keras_transfer_learning')
+sys.path.append('/media/tohn/SSD/Nor_ABnor_Network_24/content/efficientnet_keras_transfer_learning')
 from efficientnet import EfficientNetB3 as Net
 from efficientnet import center_crop_and_resize, preprocess_input
 
