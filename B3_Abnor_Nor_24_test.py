@@ -152,7 +152,7 @@ global_average_layer = layers.GlobalAveragePooling2D()(x)
 dropout_layer_1 = layers.Dropout(0.50)(global_average_layer)
 prediction_layer = layers.Dense(1, activation='sigmoid')(dropout_layer_1)
 
-model = models.Model(inputs= pre_trained_model.input, outputs=prediction_layer) 
+model = models.Model(inputs= conv_base.input, outputs=prediction_layer) 
 model.summary()
 # model = models.Sequential()
 # model.add(conv_base)
