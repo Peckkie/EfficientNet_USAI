@@ -13,7 +13,7 @@ from tensorflow.keras import callbacks
 
 import os
     # os.path.abspath('/media/tohn/SSD/Efficient_USAI')
-os.chdir('/media/tohn/SSD/Nor_ABnor_Network/content/efficientnet_keras_transfer_learning/')
+os.chdir('/media/tohn/SSD/FP-All_Nor_ABnor_Network/content/efficientnet_keras_transfer_learning/')
       #choose gpu on processing 
 os.environ["CUDA_VISIBLE_DEVICES"]="1" # second gpu  
 
@@ -170,7 +170,7 @@ model2.compile(loss='binary_crossentropy',
               metrics=['acc'])
     
     #สร้าง folder TensorBoard
-root_logdir = '/media/tohn/SSD/Nor_ABnor_Network/my_logs'
+root_logdir = '/media/tohn/SSD/FP-All_Nor_ABnor_Network/my_logs'
 def get_run_logdir():
     import time
     run_id = time.strftime("run_%Y_%m_%d_%H_%M_%S")
