@@ -1,4 +1,4 @@
-##จัดการ data ####
+##จัดการ data
 import pandas as pd
 import numpy as np
 import shutil
@@ -11,9 +11,9 @@ train= df[msk]
 
 import os
 # os.path.abspath('/media/tohn/SSD/Efficient_USAI')
-os.chdir('/media/tohn/SSD/Nor_ABnor_Network_15_b0/content/efficientnet_keras_transfer_learning/')
+os.chdir('/media/tohn/SSD/test_func/content/efficientnet_keras_transfer_learning/')
   #choose gpu on processing 
-os.environ["CUDA_VISIBLE_DEVICES"]="0" # second gpu  
+os.environ["CUDA_VISIBLE_DEVICES"]="" # second gpu  
 
 ##การเเบ่งข้อมูล train/validation/test sets
 
@@ -101,18 +101,15 @@ width = 150
 height = 150 
 input_shape = (height, width, 3) #ขนาด image enter
 
-epochs = 2000
+epochs = 10
 NUM_TRAIN = len(Nor_path_train)+len(ABn_path_train)  
 NUM_TEST = len(ABn_path_validation)+len(Nor_path_validation) 
 dropout_rate = 0.2
 
 import sys
-sys.path.append('/media/tohn/SSD/Nor_ABnor_Network_15_b0/content/efficientnet_keras_transfer_learning')
-from efficientnet import EfficientNetB0 as Net
+sys.path.append('/media/tohn/SSD/Nor_ABnor_Network_24/content/efficientnet_keras_transfer_learning')
+from efficientnet import EfficientNetB3 as Net
 from efficientnet import center_crop_and_resize, preprocess_input
-
-# loading pretrained conv base model
-conv_base = Net(weights='imagenet', include_top=False, input_shape=input_shape) 
 
 # data augmentation เพื่อลดโอกาสการเกิด overfitting
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -147,15 +144,25 @@ validation_generator = test_datagen.flow_from_directory(
         class_mode='binary')
 
 #Show architecture model
-model = models.Sequential()
-model.add(conv_base)
-model.add(layers.GlobalMaxPooling2D(name="gap"))
-# model.add(layers.Flatten(name="flatten"))
-if dropout_rate > 0:
-    model.add(layers.Dropout(dropout_rate, name="dropout_out"))
-# model.add(layers.Dense(256, activation='relu', name="fc1"))
-model.add(layers.Dense(1, activation='sigmoid', name="fc_out"))        
+# loading pretrained conv base model
+conv_base = Net(weights='imagenet', include_top=False, input_shape=input_shape) 
+
+x = conv_base.output  
+global_average_layer = layers.GlobalAveragePooling2D()(x)
+dropout_layer_1 = layers.Dropout(0.50)(global_average_layer)
+prediction_layer = layers.Dense(1, activation='sigmoid')(dropout_layer_1)
+
+model = models.Model(inputs= conv_base.input, outputs=prediction_layer) 
 model.summary()
+# model = models.Sequential()
+# model.add(conv_base)
+# model.add(layers.GlobalMaxPooling2D(name="gap"))
+# # model.add(layers.Flatten(name="flatten"))
+# if dropout_rate > 0:
+#     model.add(layers.Dropout(dropout_rate, name="dropout_out"))
+# # model.add(layers.Dense(256, activation='relu', name="fc1"))
+# model.add(layers.Dense(1, activation='sigmoid', name="fc_out"))        
+# model.summary()
 
 #showing before&after freezing
 print('This is the number of trainable layers '
@@ -170,7 +177,7 @@ model.compile(loss='binary_crossentropy',
               metrics=['acc'])
     
     #สร้าง folder TensorBoard
-root_logdir = '/media/tohn/SSD/Nor_ABnor_Network_15_b0/my_logs'
+root_logdir = '/media/tohn/SSD/test_func/my_logs'
 def get_run_logdir():
     import time
     run_id = time.strftime("run_%Y_%m_%d_%H_%M_%S")
@@ -190,13 +197,13 @@ history = model.fit_generator(
       verbose=1, 
       use_multiprocessing=True, 
       workers=1,
-      callbacks = [tensorboard_cb,callbacks.ModelCheckpoint(filepath='./models/Nor_ABnor_b0_R1_call.h5', save_freq = 'epoch')]) #
+      callbacks = [tensorboard_cb,callbacks.ModelCheckpoint(filepath='./models/Nor_ABnor_b3_R1_call.h5', save_freq = 'epoch')]) #
 
 hist_df = pd.DataFrame(history.history) 
 hist_df.to_csv('hist_df_R1.csv')
 
 #save model   
-model.save('./models/Nor_ABnor_b0_R1.h5')
+model.save('./models/Nor_ABnor_b3_R1.h5')
 
 ##plot graph
 acc = history.history['acc']
@@ -211,7 +218,7 @@ plt.plot(epochs_x, val_acc, 'b', label='Validation acc')
 plt.title('Training and validation accuracy')
 plt.legend()
     #save plot_acc
-plt.savefig('plot_acc_Nor_ABnor_b0_R1.png')
+plt.savefig('plot_acc_Nor_ABnor_b3_R1.png')
 
 plt.figure()
 plt.plot(epochs_x, loss, 'ro', label='Training loss')
@@ -219,76 +226,76 @@ plt.plot(epochs_x, val_loss, 'b', label='Validation loss')
 plt.title('Training and validation loss')
 plt.legend()
     #save plot_loss
-plt.savefig('plot_loss_Nor_ABnor_b0_R1.png')
+plt.savefig('plot_loss_Nor_ABnor_b3_R1.png')
 
-#Unfreez
-conv_base.trainable = True
-set_trainable = False
-for layer in conv_base.layers:
-    if layer.name == 'multiply_15':
-        set_trainable = True
-    if set_trainable:
-        layer.trainable = True
-    else:
-        layer.trainable = False
-print('This is the number of trainable layers '
-      'after freezing the conv base:', len(model.trainable_weights))  
+# #Unfreez
+# conv_base.trainable = True
+# set_trainable = False
+# for layer in conv_base.layers:
+#     if layer.name == 'multiply_24':
+#         set_trainable = True
+#     if set_trainable:
+#         layer.trainable = True
+#     else:
+#         layer.trainable = False
+# print('This is the number of trainable layers '
+#       'after freezing the conv base:', len(model.trainable_weights))  
 
-#Train R2
-model.compile(loss='categorical_crossentropy',
-              optimizer=optimizers.RMSprop(lr=2e-5),
-              metrics=['acc'])
+# #Train R2
+# model.compile(loss='categorical_crossentropy',
+#               optimizer=optimizers.RMSprop(lr=2e-5),
+#               metrics=['acc'])
 
-#สร้าง folder TensorBoard
-root_logdir = '/media/tohn/SSD/Nor_ABnor_Network_15_b0/my_logs_2'
-def get_run_logdir():
-    import time
-    run_id = time.strftime("run_%Y_%m_%d_%H_%M_%S")
-    return os.path.join(root_logdir,run_id)
-run_logdir = get_run_logdir()
+# #สร้าง folder TensorBoard
+# root_logdir = '/media/tohn/SSD/Nor_ABnor_Network_24/my_logs_2'
+# def get_run_logdir():
+#     import time
+#     run_id = time.strftime("run_%Y_%m_%d_%H_%M_%S")
+#     return os.path.join(root_logdir,run_id)
+# run_logdir = get_run_logdir()
 
-#คำสั่ง Train
-tensorboard_cb = callbacks.TensorBoard(run_logdir)
+# #คำสั่ง Train
+# tensorboard_cb = callbacks.TensorBoard(run_logdir)
 
-history = model.fit_generator(
-      train_generator,
-      steps_per_epoch= NUM_TRAIN //batch_size,
-      epochs=epochs,
-      validation_data=validation_generator, 
-      validation_steps= NUM_TEST //batch_size,
-      verbose=1, 
-      use_multiprocessing=True, 
-      workers=1,
-      callbacks = [tensorboard_cb,callbacks.ModelCheckpoint(filepath='./models/Nor_ABnor_b0_R2_call.h5', save_freq = 'epoch')]) #
+# history = model.fit_generator(
+#       train_generator,
+#       steps_per_epoch= NUM_TRAIN //batch_size,
+#       epochs=epochs,
+#       validation_data=validation_generator, 
+#       validation_steps= NUM_TEST //batch_size,
+#       verbose=1, 
+#       use_multiprocessing=True, 
+#       workers=1,
+#       callbacks = [tensorboard_cb,callbacks.ModelCheckpoint(filepath='./models/Nor_ABnor_b3_R2_call.h5', save_freq = 'epoch')]) #
 
-hist_df = pd.DataFrame(history.history) 
-hist_df.to_csv('hist_df_R2.csv')
+# hist_df = pd.DataFrame(history.history) 
+# hist_df.to_csv('hist_df_R2.csv')
 
-#save model    
-model.save('./models/Nor_ABnor_b0_R2.h5')
+# #save model    
+# model.save('./models/Nor_ABnor_b3_R2.h5')
 
-##plot graph
-acc = history.history['acc']
-val_acc = history.history['val_acc']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
+# ##plot graph
+# acc = history.history['acc']
+# val_acc = history.history['val_acc']
+# loss = history.history['loss']
+# val_loss = history.history['val_loss']
 
-epochs_x = range(len(acc))
+# epochs_x = range(len(acc))
 
-plt.plot(epochs_x, acc, 'ro', label='Training acc')
-plt.plot(epochs_x, val_acc, 'b', label='Validation acc')
-plt.title('Training and validation accuracy')
-plt.legend()
-    #save plot_acc
-plt.savefig('plot_acc_Nor_ABnor_b0_R2.png')
+# plt.plot(epochs_x, acc, 'ro', label='Training acc')
+# plt.plot(epochs_x, val_acc, 'b', label='Validation acc')
+# plt.title('Training and validation accuracy')
+# plt.legend()
+#     #save plot_acc
+# plt.savefig('plot_acc_Nor_ABnor_b3_R2.png')
 
-plt.figure()
-plt.plot(epochs_x, loss, 'ro', label='Training loss')
-plt.plot(epochs_x, val_loss, 'b', label='Validation loss')
-plt.title('Training and validation loss')
-plt.legend()
-    #save plot_loss
-plt.savefig('plot_loss_Nor_ABnor_b0_R2.png')
+# plt.figure()
+# plt.plot(epochs_x, loss, 'ro', label='Training loss')
+# plt.plot(epochs_x, val_loss, 'b', label='Validation loss')
+# plt.title('Training and validation loss')
+# plt.legend()
+#     #save plot_loss
+# plt.savefig('plot_loss_Nor_ABnor_b3_R2.png')
 
 
 
