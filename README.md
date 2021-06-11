@@ -22,7 +22,8 @@ Install tensorflow
      
 Install keras_efficientnets
      
-     $pip install keras_efficientnets(version 2.3.1)
+     #$pip install keras_efficientnets(version 2.3.1)
+     $pip install efficientnet
      
 ## 3. ลบ รูปที่ใช้ไม่ได้ของจาก dataset cat&dog on pwd Linux
      
